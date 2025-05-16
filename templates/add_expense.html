@@ -9,7 +9,7 @@
         <label>Payer:</label>
         <select name="payer">
             {% for person in people %}
-            <option value="{{ person }}">{{ person }}</option>
+            <option value="{{ person.name }}">{{ person.name }}</option>
             {% endfor %}
         </select><br><br>
 
@@ -18,7 +18,7 @@
 
         <label>Participants:</label><br>
         {% for person in people %}
-            <input type="checkbox" name="participants" value="{{ person }}">{{ person }}<br>
+            <input type="checkbox" name="participants" value="{{ person.name }}">{{ person.name }}<br>
         {% endfor %}
         <br>
 
