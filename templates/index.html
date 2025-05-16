@@ -37,6 +37,31 @@
             border-top: 2px solid #3498db;
             margin: 20px 0;
         }
+        .expenses-list {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .expense-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+        .expense-amount {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .expense-tag {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -46,5 +71,23 @@
         <a href="/balances">View Balances</a>
     </div>
     <hr>
+    <div class="expenses-list">
+        <h2>Recent Expenses</h2>
+        {% if expenses %}
+            {% for expense in expenses %}
+            <div class="expense-item">
+                <div>
+                    <p><strong>{{ expense.payer }}</strong> paid ₹{{ "%.2f"|format(expense.amount) }}</p>
+                    <p class="expense-tag">Tag: {{ expense.tag }}</p>
+                </div>
+                <div>
+                    <p>Participants: {{ expense.participants }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No expenses added yet. Add your first expense!</p>
+        {% endif %}
+    </div>
 </body>
 </html>

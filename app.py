@@ -23,7 +23,8 @@ def create_tables():
 @app.route("/")
 def home():
     people = Person.query.all()
-    return render_template("index.html", people=people)
+    expenses = Expense.query.order_by(Expense.id.desc()).limit(10).all()  # Show last 10 expenses
+    return render_template("index.html", people=people, expenses=expenses)
 
 @app.route("/add_expense", methods=["GET", "POST"])
 def add_expense():

@@ -2,6 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+expense_participants = db.Table(
+    'expense_participants',
+    db.Column('expense_id', db.Integer, db.ForeignKey('expenses.id'), primary_key=True),
+    db.Column('person_id', db.Integer, db.ForeignKey('people.id'), primary_key=True)
+)
+
 class Person(db.Model):
     __tablename__ = 'people'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,9 +18,11 @@ class Person(db.Model):
 class Expense(db.Model):
     __tablename__ = 'expenses'
     id = db.Column(db.Integer, primary_key=True)
-    payer = db.Column(db.String, nullable=False)
+    payer_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     tag = db.Column(db.String)
-    participants = db.Column(db.String, nullable=False)  # Comma-separated names
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+    payer = db.relationship('Person', foreign_keys=[payer_id])
+    participants = db.relationship('Person', secondary=expense_participants, backref='expenses')
