@@ -3,22 +3,36 @@ from models import db, Person, Expense
 from export_pdf import export_to_pdf
 from collections import defaultdict
 import os
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('POSTGRES_URL', 'sqlite:///expenses.db').replace('postgres://', 'postgresql://').replace('&supa=base-pooler.x', '')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+migrate = Migrate(app, db)
 
 @app.before_request
 def create_tables():
-    db.create_all()
-    # Initialize with default users if none exist
     if not Person.query.all():
         default_users = ["Gokul", "Pallavi", "Srimathi", "Sarnath", "Aditi", "Sriprasad"]
         for name in default_users:
             if not Person.query.filter_by(name=name).first():
                 db.session.add(Person(name=name))
         db.session.commit()
+
+@app.route("/init_db")
+def init_db():
+    # Drop all tables
+    db.drop_all()
+    # Create tables with new schema
+    # db.create_all()
+    # # Add default users
+    # default_users = ["Gokul", "Pallavi", "Srimathi", "Sarnath", "Aditi", "Sriprasad"]
+    # for name in default_users:
+    #     if not Person.query.filter_by(name=name).first():
+    #         db.session.add(Person(name=name))
+    # db.session.commit()
+    return "Database initialized with new schema!"
 
 @app.route("/")
 def home():
