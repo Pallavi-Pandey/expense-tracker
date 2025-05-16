@@ -22,16 +22,7 @@ def create_tables():
 
 @app.route("/init_db")
 def init_db():
-    # Drop all tables
     db.drop_all()
-    # Create tables with new schema
-    # db.create_all()
-    # # Add default users
-    # default_users = ["Gokul", "Pallavi", "Srimathi", "Sarnath", "Aditi", "Sriprasad"]
-    # for name in default_users:
-    #     if not Person.query.filter_by(name=name).first():
-    #         db.session.add(Person(name=name))
-    # db.session.commit()
     return "Database initialized with new schema!"
 
 @app.route("/")
