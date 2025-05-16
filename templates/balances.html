@@ -2,29 +2,142 @@
 <html>
 <head>
     <title>Balances</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2, h3, h4 {
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+        .balances-section {
+            margin-bottom: 30px;
+        }
+        .balances-section p {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .balances-section p:last-child {
+            border-bottom: none;
+        }
+        .settlements {
+            margin: 20px 0;
+        }
+        .settlements p {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .expenses {
+            margin: 20px 0;
+        }
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+        .expense-item strong {
+            color: #2c3e50;
+        }
+        .filter-section {
+            margin: 30px 0;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #3498db;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .positive {
+            color: #27ae60;
+        }
+        .negative {
+            color: #e74c3c;
+        }
+    </style>
 </head>
 <body>
-    <h2>Current Balances</h2>
-    {% for person, balance in balances.items() %}
-        <p>{{ person }}: ₹{{ "%.2f"|format(balance) }}</p>
-    {% endfor %}
+    <div class="container">
+        <h2>Current Balances</h2>
+        <div class="balances-section">
+            {% for person, balance in balances.items() %}
+                <p>
+                    <span>{{ person }}</span>
+                    <span class="{% if balance > 0 %}positive{% else %}negative{% endif %}">
+                        ₹{{ "%.2f"|format(balance) }}
+                    </span>
+                </p>
+            {% endfor %}
+        </div>
 
-    <h3>Settlements</h3>
-    {% for t in transactions %}
-        <p>{{ t }}</p>
-    {% endfor %}
+        <h3>Settlements</h3>
+        <div class="settlements">
+            {% for t in transactions %}
+                <p>{{ t }}</p>
+            {% endfor %}
+        </div>
 
-    <h3>All Expenses</h3>
-    {% for e in expenses %}
-        <p><strong>{{ e.payer }}</strong> paid ₹{{ e.amount }} for {{ ", ".join(e.participants) }} [Tag: {{ e.tag }}]</p>
-    {% endfor %}
+        <h3>All Expenses</h3>
+        <div class="expenses">
+            {% for e in expenses %}
+                <div class="expense-item">
+                    <span><strong>{{ e.payer }}</strong> paid ₹{{ e.amount }}</span>
+                    <span>{{ ", ".join(e.participants) }} [Tag: {{ e.tag }}]</span>
+                </div>
+            {% endfor %}
+        </div>
 
-    <h4>Filter by Tag</h4>
-    <form action="/filter_tag">
-        <input type="text" name="tag" placeholder="Enter tag to filter (e.g., food)">
-        <button type="submit">Filter</button>
-    </form>
-    <br>
-    <a href="/">Back to Home</a>
+        <h4>Filter by Tag</h4>
+        <div class="filter-section">
+            <form action="/filter_tag">
+                <input type="text" name="tag" placeholder="Enter tag to filter (e.g., food)">
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+        <a href="/">← Back to Home</a>
+    </div>
 </body>
 </html>
