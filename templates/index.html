@@ -77,11 +77,11 @@
             {% for expense in expenses %}
             <div class="expense-item">
                 <div>
-                    <p><strong>{{ expense.payer }}</strong> paid ₹{{ "%.2f"|format(expense.amount) }}</p>
+                    <p><strong>{{ expense.payer.name }}</strong> paid ₹{{ "%.2f"|format(expense.amount) }}</p>
                     <p class="expense-tag">Tag: {{ expense.tag }}</p>
                 </div>
                 <div>
-                    <p>Participants: {{ expense.participants }}</p>
+                    <p>Participants: {% set participant_names = expense.participants|map(attribute='name')|list %}{{ participant_names|join(', ') }}</p>
                 </div>
             </div>
             {% endfor %}

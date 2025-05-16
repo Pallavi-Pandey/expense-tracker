@@ -211,7 +211,7 @@
             {% for e in expenses %}
                 <div class="expense-card">
                     <div>
-                        <strong>{{ e.payer }}</strong> paid ₹{{ e.amount }}
+                        <strong>{{ e.payer.name }}</strong> paid ₹{{ e.amount }}
                     </div>
                     <div>
                         {% set participant_names = e.participants|map(attribute='name')|list %}
