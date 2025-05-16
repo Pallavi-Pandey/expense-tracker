@@ -15,6 +15,11 @@ class Person(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
+    def __repr__(self):
+        return f"Person('{self.name}')"
+
+    def __str__(self):
+        return self.name
 class Expense(db.Model):
     __tablename__ = 'expenses'
     id = db.Column(db.Integer, primary_key=True)
