@@ -40,7 +40,23 @@ def add_expense():
         participants = request.form.getlist("participants")
         tag = request.form["tag"]
 
-        exp = Expense(payer=payer, amount=amount, tag=tag, participants=",".join(participants))
+        # First get all participant objects
+        participant_objects = []
+        for participant_name in participants:
+            participant = Person.query.filter_by(name=participant_name).first()
+            if participant:
+                participant_objects.append(participant)
+        
+        # Create expense with payer
+        payer_person = Person.query.filter_by(name=payer).first()
+        if not payer_person:
+            return "Error: Payer not found", 400
+        
+        exp = Expense(payer=payer_person, amount=amount, tag=tag)
+        
+        # Add participants after expense is created
+        for participant in participant_objects:
+            exp.participants.append(participant)
         db.session.add(exp)
         db.session.commit()
         return redirect(url_for("home"))
@@ -50,9 +66,9 @@ def calculate_balances():
     expenses = Expense.query.all()
     balances = defaultdict(float)
     for e in expenses:
-        payer = e.payer
+        payer = e.payer.name
         amount = e.amount
-        participants = e.participants.split(",")
+        participants = [p.name for p in e.participants]
         split = amount / len(participants)
         for p in participants:
             if p != payer:

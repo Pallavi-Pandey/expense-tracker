@@ -214,8 +214,8 @@
                         <strong>{{ e.payer }}</strong> paid ₹{{ e.amount }}
                     </div>
                     <div>
-                        {% set participants = e.participants.split(',') %}
-                        {{ " ".join(participants) }}
+                        {% set participant_names = e.participants|map(attribute='name')|list %}
+                        {{ participant_names|join(', ') }}
                         <span class="tag">[Tag: {{ e.tag }}]</span>
                     </div>
                 </div>
