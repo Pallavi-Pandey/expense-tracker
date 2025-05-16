@@ -3,99 +3,183 @@
 <head>
     <title>Balances</title>
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --primary-dark: #357abd;
+            --text-color: #2c3e50;
+            --background: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 40px 20px;
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
         }
+
         .container {
             background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
         }
+
         h2, h3, h4 {
-            color: #2c3e50;
-            margin: 20px 0;
+            margin: 25px 0;
+            font-weight: 600;
+            color: var(--text-color);
         }
+
         .balances-section {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
-        .balances-section p {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+
+        .balance-card {
+            padding: 15px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(145deg, #f8f9fa, white);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .balances-section p:last-child {
-            border-bottom: none;
+
+        .balance-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
+
         .settlements {
-            margin: 20px 0;
+            margin: 25px 0;
         }
-        .settlements p {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 5px 0;
+
+        .settlement-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #f8f9fa, white);
+            margin: 10px 0;
+            transition: transform 0.3s ease;
         }
+
+        .settlement-item:hover {
+            transform: translateY(-2px);
+            background: white;
+        }
+
         .expenses {
-            margin: 20px 0;
+            margin: 25px 0;
         }
-        .expense-item {
+
+        .expense-card {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #f8f9fa, white);
+            margin: 10px 0;
+            transition: all 0.3s ease;
         }
-        .expense-item:last-child {
-            border-bottom: none;
+
+        .expense-card:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: var(--card-shadow);
         }
-        .expense-item strong {
-            color: #2c3e50;
+
+        .expense-card strong {
+            color: var(--text-color);
+            font-weight: 600;
         }
+
         .filter-section {
-            margin: 30px 0;
+            margin: 35px 0;
         }
+
         form {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
+
         input[type="text"] {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
             flex: 1;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
         }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
         button {
-            background-color: #3498db;
+            background: linear-gradient(145deg, var(--primary-color), var(--primary-dark));
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         button:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         a {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 30px;
             text-decoration: none;
-            color: #3498db;
+            color: var(--primary-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
+
         a:hover {
-            text-decoration: underline;
+            color: var(--primary-dark);
         }
+
         .positive {
-            color: #27ae60;
+            color: #2ecc71;
+            font-weight: 500;
         }
+
         .negative {
             color: #e74c3c;
+            font-weight: 500;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
     </style>
 </head>
@@ -104,28 +188,36 @@
         <h2>Current Balances</h2>
         <div class="balances-section">
             {% for person, balance in balances.items() %}
-                <p>
+                <div class="balance-card">
                     <span>{{ person }}</span>
                     <span class="{% if balance > 0 %}positive{% else %}negative{% endif %}">
                         ₹{{ "%.2f"|format(balance) }}
                     </span>
-                </p>
+                </div>
             {% endfor %}
         </div>
 
         <h3>Settlements</h3>
         <div class="settlements">
             {% for t in transactions %}
-                <p>{{ t }}</p>
+                <div class="settlement-item">
+                    {{ t }}
+                </div>
             {% endfor %}
         </div>
 
         <h3>All Expenses</h3>
         <div class="expenses">
             {% for e in expenses %}
-                <div class="expense-item">
-                    <span><strong>{{ e.payer }}</strong> paid ₹{{ e.amount }}</span>
-                    <span>{{ ", ".join(e.participants) }} [Tag: {{ e.tag }}]</span>
+                <div class="expense-card">
+                    <div>
+                        <strong>{{ e.payer }}</strong> paid ₹{{ e.amount }}
+                    </div>
+                    <div>
+                        {% set participants = e.participants.split(',') %}
+                        {{ " ".join(participants) }}
+                        <span class="tag">[Tag: {{ e.tag }}]</span>
+                    </div>
                 </div>
             {% endfor %}
         </div>
