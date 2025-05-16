@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Expense</title>
+</head>
+<body>
+    <h2>Add New Expense</h2>
+    <form method="POST">
+        <label>Payer:</label>
+        <select name="payer">
+            {% for person in people %}
+            <option value="{{ person }}">{{ person }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Amount:</label>
+        <input type="number" name="amount" step="0.01"><br><br>
+
+        <label>Participants:</label><br>
+        {% for person in people %}
+            <input type="checkbox" name="participants" value="{{ person }}">{{ person }}<br>
+        {% endfor %}
+        <br>
+
+        <label>Tag:</label>
+        <input type="text" name="tag" placeholder="e.g., food, hotel"><br><br>
+
+        <button type="submit">Add</button>
+    </form>
+    <a href="/">Back to Home</a>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial; }
+        h2 { color: #2E86C1; }
+    </style>
+</head>
+<body>
+    <h2>Trip Expense Summary</h2>
+    <h3>Balances:</h3>
+    <ul>
+        {% for person, balance in balances.items() %}
+        <li>{{ person }}: ₹{{ "%.2f"|format(balance) }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Settlements:</h3>
+    <ul>
+        {% for t in transactions %}
+        <li>{{ t }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Expenses:</h3>
+    <ul>
+        {% for e in expenses %}
+        <li>{{ e.payer }} paid ₹{{ e.amount }} for {{ e.participants }} [{{ e.tag }}]</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

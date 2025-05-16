@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Balances</title>
+</head>
+<body>
+    <h2>Current Balances</h2>
+    {% for person, balance in balances.items() %}
+        <p>{{ person }}: ₹{{ "%.2f"|format(balance) }}</p>
+    {% endfor %}
+
+    <h3>Settlements</h3>
+    {% for t in transactions %}
+        <p>{{ t }}</p>
+    {% endfor %}
+
+    <h3>All Expenses</h3>
+    {% for e in expenses %}
+        <p><strong>{{ e.payer }}</strong> paid ₹{{ e.amount }} for {{ ", ".join(e.participants) }} [Tag: {{ e.tag }}]</p>
+    {% endfor %}
+
+    <h4>Filter by Tag</h4>
+    <form action="/filter_tag">
+        <input type="text" name="tag" placeholder="Enter tag to filter (e.g., food)">
+        <button type="submit">Filter</button>
+    </form>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>
