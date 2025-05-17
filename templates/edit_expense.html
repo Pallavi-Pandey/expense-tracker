@@ -1,0 +1,17 @@
+{% extends "add_expense.html" %}
+
+{% block title %}Edit Expense{% endblock %}
+
+{% block form_title %}Edit Expense{% endblock %}
+
+{% block form_action %}{{ url_for('edit_expense', expense_id=expense.id) }}{% endblock %}
+
+{% block payer_selected %}{% if person == expense.payer %}selected{% endif %}{% endblock %}
+
+{% block amount_value %}value="{{ '%.2f'|format(expense.amount) }}"{% endblock %}
+
+{% block tag_value %}value="{{ expense.tag }}"{% endblock %}
+
+{% block submit_button %}Update Expense{% endblock %}
+
+{% block participants %}{{ expense.participants|map(attribute='name')|list }}{% endblock %}

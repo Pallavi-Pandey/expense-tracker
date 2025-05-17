@@ -62,6 +62,38 @@ def add_expense():
         return redirect(url_for("home"))
     return render_template("add_expense.html", people=people)
 
+@app.route("/edit_expense/<int:expense_id>", methods=["GET", "POST"])
+def edit_expense(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    people = Person.query.all()
+    
+    if request.method == "POST":
+        expense.payer = Person.query.filter_by(name=request.form["payer"]).first()
+        expense.amount = float(request.form["amount"])
+        expense.tag = request.form["tag"]
+        
+        # Clear existing participants
+        expense.participants.clear()
+        
+        # Add new participants
+        for participant_name in request.form.getlist("participants"):
+            participant = Person.query.filter_by(name=participant_name).first()
+            if participant:
+                expense.participants.append(participant)
+        
+        db.session.commit()
+        return redirect(url_for("home"))
+    
+    selected_participants = [p.name for p in expense.participants]
+    return render_template("edit_expense.html", expense=expense, people=people, selected_participants=selected_participants, participants=selected_participants)
+
+@app.route("/delete_expense/<int:expense_id>", methods=["POST"])
+def delete_expense(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    db.session.delete(expense)
+    db.session.commit()
+    return redirect(url_for("home"))
+
 def calculate_balances():
     expenses = Expense.query.all()
     balances = defaultdict(float)

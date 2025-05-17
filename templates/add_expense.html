@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Expense</title>
+    <title>{% block title %}Add Expense{% endblock %}</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -70,33 +70,33 @@
 </head>
 <body>
     <div class="container">
-        <h2>Add New Expense</h2>
-        <form method="POST">
+        <h2>{% block form_title %}Add New Expense{% endblock %}</h2>
+        <form method="POST" action="{% block form_action %}{% endblock %}">
             <div>
                 <label>Payer:</label>
                 <select name="payer">
                     {% for person in people %}
-                    <option value="{{ person.name }}">{{ person.name }}</option>
+                    <option value="{{ person.name }}" {% block payer_selected %}{% endblock %}>{{ person.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div>
                 <label>Amount:</label>
-                <input type="number" name="amount" step="0.01" required>
+                <input type="number" name="amount" step="0.01" required {% block amount_value %}{% endblock %}>
             </div>
             <div class="participants">
                 <label>Participants:</label>
                 {% for person in people %}
                     <label>
-                        <input type="checkbox" name="participants" value="{{ person.name }}"> {{ person.name }}
+                        <input type="checkbox" name="participants" value="{{ person.name }}" {% if person.name in selected_participants %}checked{% endif %}> {{ person.name }}
                     </label>
                 {% endfor %}
             </div>
             <div>
                 <label>Tag:</label>
-                <input type="text" name="tag" placeholder="e.g., food, hotel" required>
+                <input type="text" name="tag" placeholder="e.g., food, hotel" required {% block tag_value %}{% endblock %}>
             </div>
-            <button type="submit">Add Expense</button>
+            <button type="submit">{% block submit_button %}Add Expense{% endblock %}</button>
         </form>
         <a href="/">← Back to Home</a>
     </div>
