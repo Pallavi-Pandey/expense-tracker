@@ -109,37 +109,51 @@ def calculate_balances():
     return balances, expenses
 
 def simplify(balances):
-    creditors = []
-    debtors = []
+    # Convert balances to list of tuples
+    creditors = [(person, balance) for person, balance in balances.items() if balance > 0]
+    debtors = [(person, -balance) for person, balance in balances.items() if balance < 0]
 
-    for person, balance in balances.items():
-        if balance > 0:
-            creditors.append((person, balance))
-        elif balance < 0:
-            debtors.append((person, -balance))
-
+    # Sort creditors and debtors by amount (smallest first)
     creditors.sort(key=lambda x: x[1])
     debtors.sort(key=lambda x: x[1])
+    
     transactions = []
-    i = j = 0
-    while i < len(debtors) and j < len(creditors):
-        debtor, d_amt = debtors[i]
-        creditor, c_amt = creditors[j]
+    
+    # Process all debtors
+    while debtors and creditors:
+        debtor, d_amt = debtors[0]  # Get smallest debt
+        creditor, c_amt = creditors[0]  # Get smallest credit
+        
+        # Calculate amount to settle
         settled = min(d_amt, c_amt)
+        
+        # Add transaction
         transactions.append(f"{debtor} pays {creditor} ₹{settled:.2f}")
-        debtors[i] = (debtor, d_amt - settled)
-        creditors[j] = (creditor, c_amt - settled)
-        if debtors[i][1] == 0:
-            i += 1
-        if creditors[j][1] == 0:
-            j += 1
+        
+        # Update remaining amounts
+        d_amt -= settled
+        c_amt -= settled
+        
+        # Remove or update creditor
+        if c_amt == 0:
+            creditors.pop(0)
+        else:
+            creditors[0] = (creditor, c_amt)
+        
+        # Remove or update debtor
+        if d_amt == 0:
+            debtors.pop(0)
+        else:
+            debtors[0] = (debtor, d_amt)
+    
     return transactions
 
 @app.route("/balances")
 def show_balances():
     balances, expenses = calculate_balances()
     transactions = simplify(balances)
-    return render_template("balances.html", balances=balances, expenses=expenses, transactions=transactions)
+    persons=Person.query.all()
+    return render_template("balances.html", balances=balances, expenses=expenses, transactions=transactions,persons=persons)
 
 @app.route("/export_pdf")
 def export_pdf():

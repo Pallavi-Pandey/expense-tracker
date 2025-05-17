@@ -57,17 +57,95 @@
             margin: 25px 0;
         }
 
-        .settlement-item {
-            padding: 15px;
-            border-radius: 10px;
-            background: linear-gradient(145deg, #f8f9fa, white);
-            margin: 10px 0;
-            transition: transform 0.3s ease;
+        .settlement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
         }
 
-        .settlement-item:hover {
-            transform: translateY(-2px);
-            background: white;
+        .settlement-table th,
+        .settlement-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settlement-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .settlement-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .amount {
+            text-align: right;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .amount.positive {
+            color: #2ecc71;
+        }
+
+        .amount.negative {
+            color: #e74c3c;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #555;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .expense-details {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #777;
+        }
+
+        .expense-details:last-child {
+            border-bottom: none;
+        }
+
+        .expense-tag {
+            color: #999;
+            font-size: 0.9em;
         }
 
         .expenses {
@@ -186,7 +264,7 @@
 <body>
     <div class="container">
         <h2>Current Balances</h2>
-        <div class="balances-section">
+        <!-- <div class="balances-section">
             {% for person, balance in balances.items() %}
                 <div class="balance-card">
                     <span>{{ person }}</span>
@@ -195,15 +273,72 @@
                     </span>
                 </div>
             {% endfor %}
+        </div> -->
+
+        <h3>Settlement Summary</h3>
+        <div class="settlements">
+            <table class="settlement-table">
+                <thead>
+                    <tr>
+                        <th>Person</th>
+                        <th>To Pay</th>
+                        <th>To Receive</th>
+                        <th>Total Spent</th>
+
+                       
+                        <th>Net Balance (To Pay - To Receive)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        
+                            {% for person in persons %}
+                            <tr>
+                                <td>{{ person.name }}</td>
+                                <td class="amount {% if person.to_pay > 0 %}negative{% endif %}">
+                                <div class="tooltip">
+                                    ₹{{ "%.2f"|format(person.to_pay) }}
+                                    <span class="tooltiptext">
+                                        {% for detail in person.to_pay_details %}
+                                        <div class="expense-details">
+                                            <div>{{ detail.expense.payer.name }} paid ₹{{ "%.2f"|format(detail.expense.amount) }}</div>
+                                            <div class="expense-tag">[{{ detail.expense.tag }}]</div>
+                                            <div>Your share: ₹{{ "%.2f"|format(detail.amount) }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                            </td>
+                            
+                            </tr>
+                            {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        <h3>Settlements</h3>
+        <h3>Individual Settlements</h3>
         <div class="settlements">
-            {% for t in transactions %}
-                <div class="settlement-item">
-                    {{ t }}
-                </div>
-            {% endfor %}
+            <table class="settlement-table">
+                <thead>
+                    <tr>
+                        <th>Payer</th>
+                        <th>Receiver</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                        {% set parts = t.split(' pays ') %}
+                        {% set payer = parts[0] %}
+                        {% set receiver, amount = parts[1].rsplit(' ₹', 1) %}
+                        <tr>
+                            <td>{{ payer }}</td>
+                            <td>{{ receiver }}</td>
+                            <td class="amount">₹{{ amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
         <h3>All Expenses</h3>
