@@ -1,4 +1,4 @@
-# Flask Expense Tracker
+# Expense Tracker Flask
 
 A comprehensive financial management application built with Flask, allowing users to track income, expenses, and export reports.
 
